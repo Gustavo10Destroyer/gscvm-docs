@@ -57,7 +57,7 @@ const run = callJson('gscvm_start', ['string', 'string'], ['main', 'main']);
 3. Load an entry file with `gscvm_load_file(path, name)`, or load bytes directly
    with `gscvm_load_module(name, ptr, size)`. Call
    `gscvm_load_dependencies(name)` before executing scripts that use
-   `#include`/`#using`.
+   `#include`.
 4. Execute with `gscvm_call(module, function)` for a complete run, or
    `gscvm_start` plus `gscvm_run_until_idle`/`gscvm_tick`/`gscvm_notify` for
    cooperative control. `gscvm_set_execution_mode(1)` selects fixed-step tick

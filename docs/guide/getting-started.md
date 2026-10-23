@@ -83,6 +83,7 @@ This produces `build-wasm/gscvm.js` and `build-wasm/gscvm.wasm`. See
 
 ## Next steps
 
+- [Engine compatibility](/guide/compatibility)
 - [Command line](/guide/cli)
 - [Examples](/guide/examples)
 - [Embedding](/guide/embedding)

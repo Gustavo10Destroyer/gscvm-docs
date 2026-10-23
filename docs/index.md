@@ -22,7 +22,7 @@ features:
   - title: Cooperative scheduling
     details: Threads, waits, events, endon/notify, deadlock diagnostics, instruction budgets and fixed-step or real-time scheduling.
   - title: Headless by design
-    details: Game services come from a Host implementation. The VM never invents engine behaviour.
+    details: Game services come from a Host implementation. The VM never invents engine behaviour, and engine entities are not ported.
   - title: Native C++ bindings
     details: Per-VM native registry, typed argument access, custom objects and structured error context.
   - title: Browser target
@@ -50,6 +50,17 @@ function API.
 
 It is intentionally headless. Engine-specific behaviour such as dvars, entities,
 logging and script loading is supplied by the embedding application.
+
+## Engine scope
+
+gscvm is a bytecode VM, not a replacement for the IW/T6 engine. The engine
+runtime, most engine natives and the entity system are not included. In
+particular, `spawn()` and engine entities have not been ported, and there are no
+current plans to implement them. Use `Host`, the native registry or custom
+`Object` subclasses to model application-specific services and objects.
+
+See [Engine compatibility](/guide/compatibility) for the full scope and how to
+report a discrepancy.
 
 ## Quick start
 

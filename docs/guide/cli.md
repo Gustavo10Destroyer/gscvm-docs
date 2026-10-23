@@ -57,8 +57,8 @@ runner prints the requested data and exits without executing the script.
 
 ## Includes
 
-Source scripts may use `#include` and `#using`. The VM resolves them against the
-current module's directory, configured search paths, the host loader and
+Source scripts may use `#include`. The VM resolves includes against the
+current module's directory, the configured search paths, the host loader and the
 in-memory virtual files. The runner loads the entry module's declared
 dependencies before invoking the entry function. A dependency failure is printed
 as a warning; execution continues and may fail later if a required function is
@@ -86,6 +86,11 @@ colour codes. `spawnstruct()`, `array(...)`, `isarray()`, `isstring()`,
   raises a runtime error with the waiting thread, function and event.
 - Runaway execution is bounded by the instruction limit and maximum call depth.
 - A GSC runtime error reports module, function, offset, opcode and thread id.
+
+The runner does not provide the full engine runtime. Unregistered engine
+functions fail as unresolved imports; see
+[Engine compatibility](/guide/compatibility) for the engine boundary and how to
+report a discrepancy.
 
 ## Exit codes
 

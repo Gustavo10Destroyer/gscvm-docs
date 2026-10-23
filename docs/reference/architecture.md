@@ -44,6 +44,16 @@ VM does not duplicate byte-level layout rules.
 The upstream disassembler is patched at build time to recognize
 `OP_ProfileStart`; see [Upstream changes](/reference/upstream-changes).
 
+## Engine boundary
+
+The VM implements bytecode execution and cooperative scheduling, not the IW/T6
+engine runtime. Engine services are supplied through `Host`, the native registry
+and custom objects. Unregistered engine natives fail as unresolved imports.
+Engine entities and `spawn()` are not ported, and there are no current plans to
+implement them; `spawnstruct()` is only a generic VM object. See
+[Engine compatibility](/guide/compatibility) for the full scope and
+issue-reporting guidance.
+
 ## Internal IR
 
 `src/gsc/t6/module.hpp` defines:

@@ -73,7 +73,7 @@ source text that does not exist on disk, add it as a virtual file and pass its
 path to `load_module_file()`.
 
 After loading, call `load_dependencies(module)` before execution if the script
-declares `#include` or `#using` dependencies. `ModuleInfo` exposes includes and
+declares `#include` dependencies. `ModuleInfo` exposes includes and
 functions; `disassembly(name)` and `module_bytes(name)` expose the loaded
 disassembly and original bytes.
 
