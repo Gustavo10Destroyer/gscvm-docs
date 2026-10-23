@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import gscGrammar from './languages/gsc.tmLanguage.json'
 
 export default defineConfig({
   title: 'gscvm',
@@ -6,9 +7,13 @@ export default defineConfig({
   base: process.env.VITEPRESS_BASE || '/',
   cleanUrls: true,
   lastUpdated: true,
+  markdown: {
+    languages: [gscGrammar]
+  },
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'Compatibility', link: '/guide/compatibility' },
       { text: 'Reference', link: '/reference/architecture' },
       { text: 'Examples', link: '/guide/examples' },
       { text: 'Upstream', link: 'https://github.com/xensik/gsc-tool' }
@@ -19,6 +24,7 @@ export default defineConfig({
           text: 'Guide',
           items: [
             { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Engine compatibility', link: '/guide/compatibility' },
             { text: 'Command line', link: '/guide/cli' },
             { text: 'Examples', link: '/guide/examples' },
             { text: 'Embedding', link: '/guide/embedding' },

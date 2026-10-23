@@ -19,7 +19,7 @@ with the default headless host.
 
 ## Basics
 
-```text
+```gsc
 main()
 {
 	println( "gscvm basics" );
@@ -50,7 +50,7 @@ sum( values )
 
 ## Threads and events
 
-```text
+```gsc
 main()
 {
 	level.worker_result = 0;
@@ -79,7 +79,7 @@ externally driven events, use `start()`, `notify()`, `run_until_idle()` and
 
 `examples/include.gsc`:
 
-```text
+```gsc
 #include helpers\math;
 
 main()
@@ -91,7 +91,7 @@ main()
 
 `examples/helpers/math.gsc`:
 
-```text
+```gsc
 triple( value )
 {
 	return value * 3;
@@ -100,3 +100,47 @@ triple( value )
 
 The runner adds the script's directory to its search paths, so the include
 resolves without extra flags.
+
+## T6 syntax coverage
+
+The runnable examples use a deliberately small subset. The documentation's GSC
+highlighter also covers the T6 preprocessor, event statements, thread syntax,
+switch statements, function pointers, localized and hashed strings, and developer
+blocks. This illustrative snippet is not part of the runnable examples:
+
+```gsc
+#include common_scripts\utility;
+#using_animtree( "generic_human" );
+#define DEBUG 1
+
+main()
+{
+    level thread worker();
+    self endon( "death" );
+    self waittill( "work", value );
+    self notify( "ready", &"LOCALIZED_STRING", #"hash_string" );
+    wait 0.05;
+
+    if ( isdefined( value ) && !value )
+        return ::worker;
+
+    switch ( value )
+    {
+        case 1:
+            break;
+        default:
+            continue;
+    }
+}
+
+worker()
+{
+#if defined(DEBUG) && DEBUG
+    println( "debug" );
+#else
+    println( "release" );
+#endif
+
+    /# level thread dev_only(); #/
+}
+```
