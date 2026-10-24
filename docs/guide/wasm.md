@@ -4,6 +4,9 @@ The browser target is a separate Emscripten build. It produces a modularized
 `gscvm.js` loader and `gscvm.wasm`. It is static-hosting friendly: no backend,
 pthreads, COOP/COEP headers or WebAssembly threads are required.
 
+Try the [playground](/playground) for a local, file-based environment that runs
+entirely in your browser.
+
 ## Build
 
 ```sh

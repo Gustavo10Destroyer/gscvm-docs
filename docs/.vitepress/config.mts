@@ -15,6 +15,7 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Reference', link: '/reference/' },
       { text: 'Examples', link: '/guide/examples' },
+      { text: 'Playground', link: '/playground' },
       { text: 'Upstream', link: 'https://github.com/xensik/gsc-tool' }
     ],
     sidebar: {

@@ -1,0 +1,12 @@
+.VPPage {
+  padding: 0;
+}
+
+.playground-page .VPFooter {
+  display: none;
+}
+
+.gsc-playground button,
+.gsc-playground textarea {
+  font-family: inherit;
+}
