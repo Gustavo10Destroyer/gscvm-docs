@@ -13,8 +13,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'Compatibility', link: '/guide/compatibility' },
-      { text: 'Reference', link: '/reference/architecture' },
+      { text: 'Reference', link: '/reference/' },
       { text: 'Examples', link: '/guide/examples' },
       { text: 'Upstream', link: 'https://github.com/xensik/gsc-tool' }
     ],
@@ -24,23 +23,40 @@ export default defineConfig({
           text: 'Guide',
           items: [
             { text: 'Getting started', link: '/guide/getting-started' },
-            { text: 'Engine compatibility', link: '/guide/compatibility' },
             { text: 'Command line', link: '/guide/cli' },
             { text: 'Examples', link: '/guide/examples' },
-            { text: 'Embedding', link: '/guide/embedding' },
-            { text: 'Extensibility', link: '/guide/extensibility' },
-            { text: 'Native bindings', link: '/guide/native-bindings' },
             { text: 'WebAssembly', link: '/guide/wasm' }
           ]
         }
       ],
       '/reference/': [
         {
-          text: 'Reference',
+          text: 'Runtime',
           items: [
+            { text: 'Overview', link: '/reference/' },
             { text: 'Architecture', link: '/reference/architecture' },
+            { text: 'Embedding', link: '/reference/embedding' },
+            { text: 'Extending the VM', link: '/reference/extending-vm' },
+            { text: 'Native functions', link: '/reference/native-functions' }
+          ]
+        },
+        {
+          text: 'Security patterns',
+          items: [
+            { text: 'Filesystem sandbox', link: '/reference/filesystem' }
+          ]
+        },
+        {
+          text: 'Behaviour and internals',
+          items: [
+            { text: 'Engine compatibility', link: '/reference/compatibility' },
             { text: 'Opcodes', link: '/reference/opcodes' },
-            { text: 'Upstream changes', link: '/reference/upstream-changes' },
+            { text: 'Upstream changes', link: '/reference/upstream-changes' }
+          ]
+        },
+        {
+          text: 'Project',
+          items: [
             { text: 'License and attribution', link: '/license' }
           ]
         }

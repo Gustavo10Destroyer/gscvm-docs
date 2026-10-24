@@ -51,9 +51,9 @@ no engine fields or behaviour.
 
 A host can model application-specific objects with `Host::create_object()` and
 custom `Object` subclasses, or register its own `spawn` native. See
-[Extensibility](/guide/extensibility) and
-[Native bindings](/guide/native-bindings). Such objects are host-defined; they
-are not the T6 entity system.
+[Extending the VM](/reference/extending-vm) and
+[Native functions](/reference/native-functions). Such objects are host-defined;
+they are not the T6 entity system.
 
 ## When behaviour differs
 

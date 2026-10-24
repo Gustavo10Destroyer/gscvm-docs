@@ -24,7 +24,7 @@ features:
   - title: Headless by design
     details: Game services come from a Host implementation. The VM never invents engine behaviour, and engine entities are not ported.
   - title: Native C++ bindings
-    details: Per-VM native registry, typed argument access, custom objects and structured error context.
+    details: Per-VM native registry, typed argument access, custom objects, structured error context and a configurable filesystem sandbox example.
   - title: Browser target
     details: Emscripten build with virtual files, JSON inspection, memory statistics and instruction-level breakpoints.
   - title: Debuggable
@@ -59,7 +59,7 @@ particular, `spawn()` and engine entities have not been ported, and there are no
 current plans to implement them. Use `Host`, the native registry or custom
 `Object` subclasses to model application-specific services and objects.
 
-See [Engine compatibility](/guide/compatibility) for the full scope and how to
+See [Engine compatibility](/reference/compatibility) for the full scope and how to
 report a discrepancy.
 
 ## Quick start

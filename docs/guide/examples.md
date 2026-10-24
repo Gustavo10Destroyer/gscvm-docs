@@ -101,6 +101,19 @@ triple( value )
 The runner adds the script's directory to its search paths, so the include
 resolves without extra flags.
 
+## Native filesystem example
+
+The [filesystem sandbox](/reference/filesystem) reference implements an `fs`
+native namespace with `read_text`, `write_text`, `append_text`, `list`, `stat`
+and `remove`. It demonstrates default-deny permissions, per-directory and
+per-file rules, path containment checks, symlink-escape rejection and size
+limits. The page includes the complete C++ implementation, a host policy and
+matching GSC calls.
+
+For the smaller building blocks, see
+[Native functions](/reference/native-functions) and
+[Extending the VM](/reference/extending-vm).
+
 ## T6 syntax coverage
 
 The runnable examples use a deliberately small subset. The documentation's GSC

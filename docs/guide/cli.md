@@ -89,7 +89,7 @@ colour codes. `spawnstruct()`, `array(...)`, `isarray()`, `isstring()`,
 
 The runner does not provide the full engine runtime. Unregistered engine
 functions fail as unresolved imports; see
-[Engine compatibility](/guide/compatibility) for the engine boundary and how to
+[Engine compatibility](/reference/compatibility) for the engine boundary and how to
 report a discrepancy.
 
 ## Exit codes

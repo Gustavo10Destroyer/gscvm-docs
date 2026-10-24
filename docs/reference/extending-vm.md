@@ -1,4 +1,4 @@
-# Extensibility
+# Extending the VM
 
 The VM owns bytecode semantics and cooperative scheduling. Everything that
 belongs to a game engine is supplied through a `Host`, the native registry, or
@@ -81,7 +81,7 @@ vm.natives().register_function("math", "clamp", [](NativeContext& ctx) {
 Registration and lookup use the canonical `space::name` form, with an empty
 space represented as the bare name. Registration replaces an existing entry
 with the same key. `unregister_function()`, `contains()` and `names()` manage the
-registry. See [Native bindings](/guide/native-bindings).
+registry. See [Native functions](/reference/native-functions).
 
 Script imports resolve in this order: the current module, the import namespace
 as a module, the entry module, every loaded module, a module loaded from the host
@@ -157,5 +157,12 @@ lifecycle, entity classes, physics, AI, assets, UI and networking must be
 supplied by the host or registered as natives. Engine entities created by
 `spawn()` have not been ported and there are no current plans to implement them;
 `spawnstruct()` only creates a generic VM object. See
-[Engine compatibility](/guide/compatibility) for the boundary and how to report
-a discrepancy.
+[Engine compatibility](/reference/compatibility) for the boundary and how to
+report a discrepancy.
+
+## See also
+
+- [Native functions](/reference/native-functions) for the registry, argument
+  access and error handling.
+- [Filesystem sandbox](/reference/filesystem) for a complete native service with
+  configurable permissions and path containment checks.

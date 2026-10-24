@@ -83,8 +83,11 @@ This produces `build-wasm/gscvm.js` and `build-wasm/gscvm.wasm`. See
 
 ## Next steps
 
-- [Engine compatibility](/guide/compatibility)
 - [Command line](/guide/cli)
 - [Examples](/guide/examples)
-- [Embedding](/guide/embedding)
+- [Embedding](/reference/embedding)
+- [Extending the VM](/reference/extending-vm)
+- [Native functions](/reference/native-functions)
+- [Filesystem sandbox](/reference/filesystem)
 - [Architecture](/reference/architecture)
+- [Engine compatibility](/reference/compatibility)

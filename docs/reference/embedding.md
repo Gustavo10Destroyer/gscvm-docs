@@ -184,3 +184,11 @@ error through `NativeContext::error()`.
 A `VM` instance is not internally synchronized. Keep one VM per thread, or
 serialize all access from the host. Different VM instances do not share native
 registries, modules or runtime state.
+
+## Next steps
+
+- [Extending the VM](/reference/extending-vm) for host services and custom
+  objects.
+- [Native functions](/reference/native-functions) for registering C++ functions.
+- [Filesystem sandbox](/reference/filesystem) for a complete native service with
+  configurable permissions.

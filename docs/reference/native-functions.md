@@ -1,4 +1,4 @@
-# Native bindings
+# Native functions
 
 Natives bridge GSC imports to C++ code. They are registered on a specific `VM`,
 so separate VMs never share native state.
@@ -88,7 +88,7 @@ vm.natives().register_function("", "make_pair", [](NativeContext& ctx) {
 
 `Array` preserves insertion order for iteration and supports integer or string
 keys. `Object` and `ScriptObject` provide field/index access. See
-[Extensibility](/guide/extensibility) for custom object subclasses.
+[Extending the VM](/reference/extending-vm) for custom object subclasses.
 
 ## Errors
 
@@ -129,6 +129,13 @@ vm.natives().unregister_function("math", "clamp");
 
 The registry is per VM and is not synchronized. Register or modify it from the
 same thread that drives the VM.
+
+## Complete example
+
+The [filesystem sandbox](/reference/filesystem) reference builds a small `fs`
+native namespace on top of this API. It shows registration, argument access,
+return values, `ScriptObject` metadata and `gsc::Error` failures in a complete
+implementation with configurable permissions.
 
 ## CLI and browser builtins
 

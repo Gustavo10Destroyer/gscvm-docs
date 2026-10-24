@@ -51,7 +51,7 @@ engine runtime. Engine services are supplied through `Host`, the native registry
 and custom objects. Unregistered engine natives fail as unresolved imports.
 Engine entities and `spawn()` are not ported, and there are no current plans to
 implement them; `spawnstruct()` is only a generic VM object. See
-[Engine compatibility](/guide/compatibility) for the full scope and
+[Engine compatibility](/reference/compatibility) for the full scope and
 issue-reporting guidance.
 
 ## Internal IR
