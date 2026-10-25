@@ -223,6 +223,10 @@ main()
 Native callbacks must be synchronous. If data comes from an asynchronous API,
 fetch it in the bootstrap function and return the cached value from the native.
 
+Namespaced natives are called as `space::name`. The T6 compiler records the
+space as an include, but `loadDependencies()` recognizes registered native
+spaces, so a missing `space.gsc` module is not treated as an error.
+
 #### Browser APIs and host objects
 
 Use `host` to bind browser state to GSC objects:
