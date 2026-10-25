@@ -5,12 +5,15 @@ export interface WorkspaceState {
   expanded: string[]
 }
 
+export const BOOTSTRAP_PATH = 'bootstrap.js'
+
 const mainSource = `#include helpers\\math;
 
 main()
 {
 	println( "gscvm playground" );
 	println( "add(20, 22) = &&1", add( 20, 22 ) );
+	println( "jsadd(20, 22) = &&1", jsadd( 20, 22 ) );
 
 	values = array( 3, 5, 8 );
 	println( "sum = &&1", sum( values ) );
@@ -59,16 +62,34 @@ This workspace is stored in your browser with IndexedDB. Reloading the page
 keeps your files, folders and open tab.
 
 - Select a \`.gsc\` or \`.csc\` file and press Run (Ctrl/Cmd+Enter).
-- The entire virtual workspace is injected into the WebAssembly VM before the
-  focused script runs.
+- Every run creates a fresh WebAssembly VM and injects the virtual workspace.
+- \`bootstrap.js\` runs before the focused script on every run. Use it to
+  register JavaScript natives and bind host services such as \`level\`.
+- The example bootstrap adds \`jsadd\` and \`browser::storage\` (localStorage).
+- Native callbacks are synchronous. Prefetch asynchronous data in the bootstrap
+  function, then register a native that returns the cached value.
 - The terminal is read-only and supports ANSI colors and control sequences.
 - \`#include\` paths are resolved from the virtual filesystem.
 
-Try \`scripts/main.gsc\` or \`scripts/threads.gsc\`.
+Try \`scripts/main.gsc\`, \`scripts/threads.gsc\` or edit \`bootstrap.js\`.
+`
+
+const bootstrapSource = `async function bootstrap({ vm }) {
+	vm.registerNative( 'jsadd', ( ctx, a, b ) => a + b );
+
+	vm.registerNative( 'browser', 'storage', ( ctx, key, value ) => {
+		if ( value === undefined || value === null )
+			return localStorage.getItem( String( key ) ) ?? undefined;
+
+		localStorage.setItem( String( key ), String( value ) );
+		return value;
+	} );
+}
 `
 
 export const DEFAULT_WORKSPACE: WorkspaceState = {
   files: {
+    [BOOTSTRAP_PATH]: bootstrapSource,
     'scripts/main.gsc': mainSource,
     'scripts/helpers/math.gsc': mathSource,
     'scripts/threads.gsc': threadsSource,

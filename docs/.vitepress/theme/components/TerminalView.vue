@@ -59,7 +59,7 @@ const lightTheme = {
 
 const welcome =
   '\x1b[1;36mgscvm playground\x1b[0m\r\n' +
-  '\x1b[90mOpen a .gsc file and press Run. Output appears here.\x1b[0m\r\n\r\n'
+  '\x1b[90mOpen a .gsc file and press Run. bootstrap.js runs first in a fresh VM.\x1b[0m\r\n\r\n'
 
 function write(data: string): void {
   terminal.value?.write(data.replace(/\r?\n/g, '\r\n'))

@@ -1,14 +1,12 @@
 import { withBase } from 'vitepress'
-import { isRunnable, withoutExtension, type WorkspaceState } from './workspace'
-
-interface GscvmModule {
-  _gscvm_init: () => number
-  _gscvm_shutdown: () => void
-  _gscvm_last_error: () => number
-  _gscvm_free: (pointer: number) => void
-  ccall: (name: string, returnType: string, argumentTypes: string[], arguments_: unknown[]) => number
-  UTF8ToString: (pointer: number) => string
-}
+import * as gscvm from './sdk/gscvm.mjs'
+import { createVM, type GscVM, type GscvmModule, type Host } from './sdk/gscvm.mjs'
+import {
+  BOOTSTRAP_PATH,
+  isRunnable,
+  withoutExtension,
+  type WorkspaceState
+} from './workspace'
 
 interface GscvmFactory {
   (options?: Record<string, unknown>): Promise<GscvmModule>
@@ -28,6 +26,14 @@ export interface RunResult {
     value: string
   }
 }
+
+interface BootstrapContext {
+  vm: GscVM
+  host: Host
+  gscvm: typeof gscvm
+}
+
+type BootstrapFunction = (context: BootstrapContext) => unknown
 
 let factoryPromise: Promise<GscvmFactory> | null = null
 let modulePromise: Promise<GscvmModule> | null = null
@@ -62,9 +68,7 @@ async function getModule(): Promise<GscvmModule> {
     modulePromise = (async () => {
       const factory = await loadFactory()
       return factory({
-        locateFile: (path: string) => withBase(`/playground/${path}`),
-        print: (message: string) => console.log(message),
-        printErr: (message: string) => console.error(message)
+        locateFile: (path: string) => withBase(`/playground/${path}`)
       })
     })()
   }
@@ -72,34 +76,40 @@ async function getModule(): Promise<GscvmModule> {
   return modulePromise
 }
 
-function callString(
-  module: GscvmModule,
-  name: string,
-  argumentTypes: string[],
-  arguments_: unknown[]
-): string | null {
-  const pointer = module.ccall(name, 'number', argumentTypes, arguments_)
-  if (!pointer) return null
-
-  try {
-    return module.UTF8ToString(pointer)
-  } finally {
-    module._gscvm_free(pointer)
-  }
+function createHostProxy(handlers: Record<string, unknown>): Host {
+  return new Proxy(handlers, {
+    get(target, property) {
+      return target[property as string]
+    },
+    set(target, property, value) {
+      target[property as string] = value
+      return true
+    },
+    has(target, property) {
+      return property in target
+    },
+    deleteProperty(target, property) {
+      delete target[property as string]
+      return true
+    }
+  }) as Host
 }
 
-function parseJson<T>(value: string | null): T | null {
-  if (!value) return null
-  try {
-    return JSON.parse(value) as T
-  } catch {
-    return null
-  }
-}
+function compileBootstrap(source: string): BootstrapFunction | null {
+  if (!source.trim()) return null
 
-function lastError(module: GscvmModule): string {
-  const pointer = module._gscvm_last_error()
-  return pointer ? module.UTF8ToString(pointer) : 'unknown WebAssembly error'
+  const factory = new Function(
+    'gscvm',
+    `"use strict";\n${source}\n;return typeof bootstrap === "function" ? bootstrap : undefined;`
+  ) as (module: typeof gscvm) => unknown
+
+  const bootstrap = factory(gscvm)
+  if (bootstrap === undefined) return null
+  if (typeof bootstrap !== 'function') {
+    throw new Error(`${BOOTSTRAP_PATH} must define a bootstrap function`)
+  }
+
+  return bootstrap as BootstrapFunction
 }
 
 export async function runWorkspace(
@@ -111,59 +121,50 @@ export async function runWorkspace(
   }
 
   const module = await getModule()
-  if (module._gscvm_init() !== 1) {
-    return { output: '', error: lastError(module) }
-  }
-
+  const host = createHostProxy({})
+  let vm: GscVM | undefined
   let output = ''
   let error: string | undefined
   let result: RunResult['result']
 
   try {
-    module.ccall('gscvm_set_instruction_limit', 'number', ['number'], [2_000_000])
+    vm = await createVM({
+      module,
+      host,
+      config: {
+        instructionLimit: 2_000_000
+      }
+    })
 
     for (const file of Object.keys(workspace.files).sort()) {
-      const added = module.ccall(
-        'gscvm_add_source',
-        'number',
-        ['string', 'string'],
-        [file, workspace.files[file] ?? '']
-      )
-      if (added !== 1) {
-        throw new Error(`could not inject ${file}: ${lastError(module)}`)
+      if (file === BOOTSTRAP_PATH) continue
+      if (!vm.addSource(file, workspace.files[file] ?? '')) {
+        throw new Error(`could not inject ${file}: ${vm.lastError()}`)
       }
     }
 
+    const bootstrap = compileBootstrap(workspace.files[BOOTSTRAP_PATH] ?? '')
+    if (bootstrap) await bootstrap({ vm, host, gscvm })
+
     const moduleName = withoutExtension(path)
-    const loaded = parseJson<{ ok: boolean; error?: string }>(
-      callString(module, 'gscvm_load_file', ['string', 'string'], [path, moduleName])
-    )
-    if (!loaded?.ok) {
-      error = loaded?.error ?? 'could not load script'
-    } else {
-      const dependencies = parseJson<{ ok: boolean; error?: string }>(
-        callString(module, 'gscvm_load_dependencies', ['string'], [moduleName])
-      )
-      if (!dependencies?.ok) {
-        error = dependencies?.error ?? 'could not load dependencies'
-      } else {
-        const call = parseJson<{
-          ok: boolean
-          error?: string
-          result?: RunResult['result']
-        }>(callString(module, 'gscvm_call', ['string', 'string'], [moduleName, 'main']))
-        if (!call?.ok) {
-          error = call?.error ?? 'script failed'
-        } else {
-          result = call.result
-        }
-      }
+    vm.loadFile(path, moduleName)
+    vm.loadDependencies(moduleName)
+
+    const value = vm.call(moduleName, 'main')
+    result = {
+      type: value.type,
+      value: value.display
     }
   } catch (caught) {
     error = caught instanceof Error ? caught.message : String(caught)
   } finally {
-    output = callString(module, 'gscvm_take_output', [], []) ?? ''
-    module._gscvm_shutdown()
+    if (vm) {
+      try {
+        output = vm.takeOutput()
+      } finally {
+        vm.close()
+      }
+    }
   }
 
   return { output, error, result }

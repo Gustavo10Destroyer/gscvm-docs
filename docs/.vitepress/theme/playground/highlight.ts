@@ -9,7 +9,7 @@ function getHighlighter(): Promise<Highlighter> {
       const { createHighlighter } = await import('shiki')
       return createHighlighter({
         themes: ['github-dark', 'github-light'],
-        langs: [gscGrammar, 'markdown']
+        langs: [gscGrammar, 'markdown', 'javascript']
       })
     })()
   }

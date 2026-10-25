@@ -19,7 +19,12 @@ const highlight = ref<HTMLPreElement | null>(null)
 const gutter = ref<HTMLDivElement | null>(null)
 const scrollTop = ref(0)
 const highlighted = ref('')
-const language = computed(() => (props.path.toLowerCase().endsWith('.md') ? 'markdown' : 'gsc'))
+const language = computed(() => {
+  const lower = props.path.toLowerCase()
+  if (lower.endsWith('.md')) return 'markdown'
+  if (lower.endsWith('.js') || lower.endsWith('.mjs')) return 'javascript'
+  return 'gsc'
+})
 const lineCount = computed(() => props.modelValue.split('\n').length)
 const rendered = computed(() => highlighted.value || escapeHtml(props.modelValue))
 

@@ -8,6 +8,7 @@ import { runWorkspace } from '../playground/wasm'
 import {
   ancestorFolders,
   basename,
+  BOOTSTRAP_PATH,
   cloneWorkspace,
   DEFAULT_WORKSPACE,
   dirname,
@@ -238,7 +239,11 @@ async function run(): Promise<void> {
 onMounted(async () => {
   const stored = await loadWorkspace()
   const sanitized = stored ? sanitizeWorkspace(stored) : null
-  workspace.value = sanitized ?? cloneWorkspace(DEFAULT_WORKSPACE)
+  const restored = sanitized ?? cloneWorkspace(DEFAULT_WORKSPACE)
+  if (!Object.prototype.hasOwnProperty.call(restored.files, BOOTSTRAP_PATH)) {
+    restored.files[BOOTSTRAP_PATH] = DEFAULT_WORKSPACE.files[BOOTSTRAP_PATH] ?? ''
+  }
+  workspace.value = restored
   loaded.value = true
   await nextTick()
   editor.value?.syncScroll()
